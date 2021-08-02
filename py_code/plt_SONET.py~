@@ -1,0 +1,49 @@
+import matplotlib.lines as mlines
+import matplotlib.pyplot as plt
+
+N = int(raw_input("N: "))
+K= int(raw_input("K: "))
+rateWnt= float(raw_input("rate: "))
+
+cluster = int(raw_input("cluster: "))
+net_dict = {'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[0]}
+cluster_dict = {'scratch':cluster,'par':0,'q':0}
+
+ana = {}
+ana['recip'] = scriptFrame('r','eft',9,alpha=[[-1,7],[0],[0],[0]],netConst=net_dict,cluster=cluster_dict,mode_return=True)
+ana['conv'] = scriptFrame('r','eft',11,alpha=[[0],[0,1],[0],[0]],netConst=net_dict,cluster=cluster_dict,mode_return=True)
+ana['div'] = scriptFrame('r','eft',13,alpha=[[0],[0],[0,6],[0]],netConst=net_dict,cluster=cluster_dict,mode_return=True)
+ana['chain'] = scriptFrame('r','eft',11,alpha=[[0],[0.5],[1],[-0.5,0.5]],netConst=net_dict,cluster=cluster_dict,mode_return=True)
+
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+
+mpl.rcParams['xtick.labelsize'] = 10
+mpl.rcParams['ytick.labelsize'] = 10
+
+plt.figure(figsize=(4,3))
+ax = plt.axes([0.2,0.2,0.7,0.7])
+print ana['recip'].keys()
+
+mask = np.invert(np.isnan(ana['recip']['eft'][0].transpose()[0]))
+plt.errorbar(np.linspace(-1,7,9)[mask],ana['recip']['eft'][0].transpose()[0][mask],yerr=ana['recip']['eft'][0].transpose()[1][mask],marker='o',ls='-.',color='k',ecolor='r',label=r'$\displaystyle \alpha_{recip}$')
+
+mask = np.invert(np.isnan(ana['conv']['eft'][0].transpose()[0]))
+plt.errorbar(np.linspace(0,1,11)[mask],ana['conv']['eft'][0].transpose()[0][mask],yerr=ana['conv']['eft'][0].transpose()[1][mask],marker='o',ls='-.',color='r',ecolor='r',label=r'$\displaystyle \alpha_{conv}$')
+
+mask = np.invert(np.isnan(ana['div']['eft'][0].transpose()[0]))
+plt.errorbar(np.linspace(0,6,13)[mask],ana['div']['eft'][0].transpose()[0][mask],yerr=ana['div']['eft'][0].transpose()[1][mask],marker='o',ls='-.',color='b',ecolor='r',label=r'$\displaystyle \alpha_{div}$')
+
+mask = np.invert(np.isnan(ana['chain']['eft'][0].transpose()[0]))
+plt.errorbar(np.linspace(-0.5,0.5,11)[mask],ana['chain']['eft'][0].transpose()[0][mask],yerr=ana['chain']['eft'][0].transpose()[1][mask],marker='o',ls='-.',color='y',ecolor='r',label=r'$\displaystyle \alpha_{chain}$')
+
+plt.xlim([-1,7])
+plt.ylim([0,0.1])
+
+plt.xticks(np.arange(-1,8))
+plt.yticks(np.linspace(0,0.1,6))
+plt.xlabel(r'$\displaystyle \alpha \rightarrow$',fontsize=14)
+plt.ylabel(r'$\displaystyle \varepsilon_{FT}$',fontsize=14)
+plt.legend(loc=2,prop={'size':12})
+plt.savefig('./pics/SONET/total_fluxtube_N=%d_K=%d_rate=%d.pdf'%(N,K,rateWnt))
+plt.show()

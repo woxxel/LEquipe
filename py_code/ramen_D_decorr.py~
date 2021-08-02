@@ -1,0 +1,186 @@
+
+def ramen_cplg_influence(steps,scratch=1):
+  
+  N = 500
+  K = 100
+  rateWnt = 1
+  
+  #cplg = -10
+  
+  cluster_dict = {'scratch':scratch,'par':0,'q':0}
+  
+  plt.rc('text', usetex=True)
+  plt.rc('font', family='serif')
+  
+  #ER_decorr = scriptFrame('r','samples',1,alpha=[[0],[0],[0],[0]],netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[2]},cluster={'scratch':1,'par':0,'q':0},mode_return=1)
+  
+  #print ER_decorr
+  #return
+  #D_decorr_ER = ER_decorr['D_decorr'][0,0,0]
+  #D_spike_fail = ER_decorr['D_decorr'][0,0,0]
+  #print D_decorr_ER
+  #fileName = 'get_D_decorr.nc'
+  #D_get_str = './Code/other/calc_I %s %d %d %g ' % (fileName,N,K,rateWnt)
+  
+  #os.system(D_get_str)
+  
+  #try:
+    #ncid = netcdf.netcdf_file(fileName,'r')
+    
+    #D_decorr_ER = ncid.variables['D_decorr'].getValue()
+    #D_spike_fail = ncid.variables['D_spike_failure'].getValue()
+    
+    #ncid.close()
+    
+    #os.remove(fileName)
+  #except:
+    #D_decorr_ER = np.nan
+    #D_spike_fail = np.nan
+   
+  #steps = 13
+
+  
+  #Data = {}
+  #Data['mean'] = np.zeros((4,steps))
+  #Data['var'] = np.zeros((4,steps))
+  
+  plt_range = 10**np.linspace(0,3,steps)
+  
+  cplg_array = -np.array([1,2,5])
+  
+  plt.figure(figsize=(6,5))
+  ax = plt.axes([0.15,0.18,0.6,0.78])
+  
+  
+  #dat_decorr = scriptFrame('r','samples',steps,hPconst=['cplg',cplg],netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[3]},cluster=cluster_dict,mode_return=1)
+  
+  for i in range(len(cplg_array)):
+    col = i/float(len(cplg_array))
+    c = (col,col,col)
+    
+    J_p = cplg_array[i]
+    
+    dat_decorr = scriptFrame('r','samples',1,hPconst={'cplg':[J_p],'rate':plt_range},netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[2]},cluster={'scratch':2,'par':0,'q':1},mode_return=1)
+    
+    dat_T_conv = scriptFrame('r','samples',1,hPconst={'cplg':[J_p],'rate':plt_range},netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[30]},cluster={'scratch':2,'par':0,'q':1},mode_return=1)
+    
+    dat_eft = scriptFrame('r','eft',1,hPconst={'cplg':[J_p],'rate':plt_range},netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[0]},cluster={'scratch':2,'par':0,'q':1},mode_return=1)
+    
+    #print dat_decorr['D_decorr'][0][:,0]
+    #print dat_eft['eft']
+    #print dat_eft.keys()
+    print dat_T_conv
+    mask_decorr = np.invert(np.isnan(dat_decorr['D_decorr'][0,:,0]))
+    mask_eft = np.invert(np.isnan(dat_eft['eft'][0,:,0]))
+    #mask_T = np.invert(np.isnan(dat_T_conv['tau_RC'][0,:]))
+    
+    
+    #mask_sync = np.where(dat_decorr['D_decorr'][0,:,0]<dat_eft['eft'][0,:,0])
+    #print dat_eft['eft'][0,:,0]
+    #factor = np.sqrt(-J_p)
+    factor = 1
+    #print plt_range
+    #print dat_decorr['D_decorr'][0,:,0][mask]
+    #print plt_range[mask]
+    #plt.errorbar(plt_range[mask]*factor,dat_decorr['D_decorr'][0][mask],dat_decorr['D_decorr_var'][0][mask],color=c,fmt='--',label='$\displaystyle J_p = %g$' % J_p)
+    
+    
+    
+    no_err = np.where(dat_eft['eft'][0,:,0] > dat_decorr['D_decorr'][0,:,0])
+    print dat_eft['eft'][0,:,0]
+    for n in range(steps):	# don't plot solutions with 1 trajectory only
+      if dat_eft['eft'][0,n,0] > dat_decorr['D_decorr'][0,n,0]:
+	dat_eft['eft'][0,n:,0] = dat_decorr['D_decorr'][0,n,0]
+	dat_eft['eft'][0,n+1:,0] = np.nan #dat_decorr['D_decorr'][0,n,0]
+	dat_eft['eft'][0,n:,1] = np.nan
+	dat_decorr['D_decorr'][0,n+1:,0] = np.nan
+	break
+    
+    plt.plot(plt_range[mask_decorr]*factor,dat_decorr['D_decorr'][0,:,0][mask_decorr],'--',color=c)
+    
+    plt.errorbar(plt_range[mask_eft]*factor,dat_eft['eft'][0,:,0][mask_eft],yerr=dat_eft['eft'][0,:,1][mask_eft],color=c,fmt='-',linewidth=3,label=r'$\displaystyle J_p = %g$'%J_p)
+    
+    plt.plot(plt_range,dat_T_conv['tau_RC'][0],':',color=c,linewidth=2)
+    
+  
+  #plt.plot(plt_range,D_decorr_ER*np.ones(len(plt_range)),'--r',linewidth=2,label=r'$\displaystyle D_{\phi}(ER)$')
+  #plt.plot(plt_range,D_spike_fail*np.ones(len(plt_range)),'--r',linewidth=2,label='spike_failure')
+  plt.plot(plt_range,np.ones(len(plt_range)),'--r',linewidth=1,label=r'$\displaystyle D_{\phi}(spike)$')
+  plt.plot([0,0],[-1,-1],'--k',label=r'$\displaystyle D_{\phi}$(decorr)')
+  plt.plot([0,0],[-1,-1],'-k',label=r'$\displaystyle \varepsilon_{FT}$')
+  
+  plt.xscale('log')
+  plt.yscale('log')
+  plt.xlim([10**0,10**3.5])
+  plt.ylim([10**(-2),10**1.5])
+  
+  plt.xlabel(r'$\displaystyle \nu_p$ in Hz',fontsize=16)
+  plt.ylabel(r'$\displaystyle D_{\phi}$',fontsize=16)
+  plt.legend(loc='center left',bbox_to_anchor=(1,0.5),prop={'size':12})
+  plt.show(block=False)
+    
+  #if mode=='D_decorr':
+ 
+    #for i in range(3):
+      
+      #cplg = cplg_array[i]
+      
+      #col = i/float(len(cplg_array))
+      #c = (col,col,col)
+      
+      #dat_tmp = scriptFrame('r','samples',steps,hPconst=['cplg',cplg],netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2],'special':[2]},cluster=cluster_dict,mode_return=1)
+
+      #Data['mean'][i] = dat_tmp['D_decorr_num'][0]
+      #Data['var'][i] = dat_tmp['D_decorr_var'][0]
+      
+      #plt.errorbar(plt_range,Data['mean'][i],Data['var'][i],color=c,linewidth=2,ecolor=c,fmt='-o',label=r'$\displaystyle J_p = %g$'%(-10**i))
+      
+  #plt.plot(plt_range,D_decorr_ER*np.ones(len(plt_range)),'--r',linewidth=2,label='ER')
+  
+    #plt.xscale('log')
+    #plt.ylim([0,10])
+    #plt.xlabel(r'$\displaystyle \bar{\nu}_p$ in Hz',fontsize=18)
+    #plt.ylabel(r'$\displaystyle D_{decorr}$',fontsize=18)
+    #plt.legend(prop={'size':14},loc=3)
+    #plt.show()
+  
+  #if mode=='eft':
+    #for i in range(0,3):
+      
+      #col = i/2.2
+      #c = (col,col,col)
+      
+      #dat_tmp = scriptFrame('r','eft',steps,hPconst=['cplg',-10**i],netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2]},cluster=cluster_dict,mode_return=1)
+      
+      ##print dat_tmp['eft'][0]
+
+      #Data['mean'][i] = dat_tmp['eft'][0]
+      ##print dat_tmp['p']
+      #for j in range(len(Data['mean'][i])):
+	#if (Data['mean'][i][j] >= D_decorr_ER):# or np.isnan(Data['mean'][i][j]):
+	  #Data['mean'][i][j] = D_decorr_ER
+      
+      #Data['var'][i] = dat_tmp['var_eft'][0]
+      
+      #mask = np.invert(np.isnan(Data['mean'][i]))
+      #ax.errorbar(plt_range[mask],Data['mean'][i][mask],Data['var'][i][mask],color=c,linewidth=1,ecolor=c,fmt='-o',label=r'$\displaystyle J_p = %g$'%(-10**i))
+      #ax.set_ylabel(r'$\displaystyle \varepsilon_{FT}$',fontsize=16)
+      #ax.set_xlim([1,10**4])
+    #dat_tmp = scriptFrame('r','eft',1,alpha=[[0],[0],[0],[0]],netConst={'N':[N],'K':[K],'rateWnt':[rateWnt],'J0':[-1],'NeuronType':[2]},cluster=cluster_dict,mode_return=1)
+    
+    #ER_eft = D_decorr_ER#dat_tmp['eft'][0]
+    ##ER_eft_var = dat_tmp['var_eft'][0]
+    
+    #ax.plot(plt_range,D_decorr_ER*np.ones(len(plt_range)),'--r',linewidth=2)#,label=r'$\displaystyle D_{decorr}$ from ER')
+    #ax.plot(plt_range,D_spike_fail*np.ones(len(plt_range)),'--r',linewidth=2,label=r'$\displaystyle D_{spike fail}$')
+    
+    #ax.plot(plt_range,ER_eft*np.ones(len(plt_range)),'--k',linewidth=1,label=r'$\displaystyle \varepsilon_{FT}$ from ER')
+    
+    #ax.set_xscale('log')
+    #ax.set_yscale('log')
+    #ax.set_ylim([0,10])
+    #ax.set_xlabel(r'$\displaystyle \bar{\nu}_p$ in Hz',fontsize=14)
+    
+    #ax.legend(prop={'size':12},loc=2)
+    #plt.show()
+  

@@ -1,0 +1,2603 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 1cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Part*
+L'Equipe
+\end_layout
+
+\begin_layout Section
+Quick Start
+\end_layout
+
+\begin_layout Itemize
+Install the libraries GSL, NETCDF, and if wanted ATLAS and MPI.
+ Edit the Makefile with the correct links to your installations.
+\begin_inset Newline newline
+\end_inset
+
+(The current version with which lequipe is working are gsl-1.14, netcdf-3.6.3,
+ atlas-3.8.3 and openmpi-1.4.2)
+\end_layout
+
+\begin_layout Itemize
+Compile LEquipe with the make command on the machine where you are going
+ to run the simulations.
+\end_layout
+
+\begin_layout Itemize
+Write your matlab/python/...
+ script that generates the netcdf files with all parameters and variables
+ to run the simulation.
+\end_layout
+
+\begin_layout Itemize
+Run the simulation.
+\end_layout
+
+\begin_layout Itemize
+Read in the results with your matlab/python/...
+ script.
+\end_layout
+
+\begin_layout Itemize
+Consider to delete unnecessary data (.nc) files after the simulation is done
+ and to put the data you want to keep into a tar archive.
+ It is not necessary, or actually possible, to compress the netcdf files
+ since all data is stored in the binary format.
+\end_layout
+
+\begin_layout Section
+Example: Spike Train
+\end_layout
+
+\begin_layout Standard
+Let us calculate the spike train of a neural network using different neuron
+ types.
+ After compiling the main program LEquipe with the make command, open the
+ matlab script LEquipe_train.m in the folder scripts.
+ The script should look like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "scripts/LEquipe_train.m"
+lstparams "caption={LEquipe_train.m},language={Matlab}"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Press F5 and run the skript in matlab.
+ This will create a directory called data and write the three netcdf files
+ with the neuron description, the topology description and the simulation
+ description.
+ You can look at the binary content of these files with ncdump.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+creating new directory: ../data/ 
+\end_layout
+
+\begin_layout Plain Layout
+
+writing neuron netcdf file: ../data/ParaNeurons-238560aa7913a48c7b277911375edf05.nc
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+writing topology netcdf file: ../data/ParaTopology-e0472435972de7d62357cbd3a12d597
+b.nc 
+\end_layout
+
+\begin_layout Plain Layout
+
+writing simulation netcdf file: ../data/ParaSimulation-37020414514f2266560cff4617d
+ee626.nc 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Afterwards, the C++ LEquipe is called by the matlab script.
+ It will tell us, that the simulation runs on one processor.
+ Then it will output some not so important details and will read in the
+ three netcdf files where all the parameters for the simulation are specified.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+running on 1 processor(s) ...
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+************************ CPU 1 of 1 reporting for duty ************************
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+running on esperine.local in /Users/mik/MPI/code/cpp/lequipe/Tutorial/scripts
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+the 4 command line arguments were: 
+\end_layout
+
+\begin_layout Plain Layout
+
+../data/ParaNeurons-238560aa7913a48c7b277911375edf05.nc 
+\end_layout
+
+\begin_layout Plain Layout
+
+../data/ParaTopology-e0472435972de7d62357cbd3a12d597b.nc
+\end_layout
+
+\begin_layout Plain Layout
+
+../data/ParaSimulation-37020414514f2266560cff4617dee626.nc 
+\end_layout
+
+\begin_layout Plain Layout
+
+../data/DataOut-5e87c799f7dcc1c9da6942aa0b791810.nc
+\end_layout
+
+\begin_layout Plain Layout
+
+-------------------------------------------------------------------------------
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+the used data types are: 
+\end_layout
+
+\begin_layout Plain Layout
+
+int:		 size = 4 Bytes,	 range = -2147483648 to 2147483647 
+\end_layout
+
+\begin_layout Plain Layout
+
+unsigned:	 size = 4 Bytes,	 range = 0 to 4294967295 
+\end_layout
+
+\begin_layout Plain Layout
+
+long long:	 size = 8 Bytes,	 range = -9223372036854775808 to 9223372036854775807
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+reell:		 size = 8 Bytes,	 range = 2.22507e-308 to 1.79769e+308,	 precision
+ = 2.22045e-16 
+\end_layout
+
+\begin_layout Plain Layout
+
+-------------------------------------------------------------------------------
+\end_layout
+
+\begin_layout Plain Layout
+
+reading ../data/ParaNeurons-238560aa7913a48c7b277911375edf05.nc ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+reading ../data/ParaTopology-e0472435972de7d62357cbd3a12d597b.nc ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+reading ../data/ParaSimulation-37020414514f2266560cff4617dee626.nc ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+*** Parameter import successful!
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CPU time for initialization: 0s 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then it will generate the neural network according to the parameters and
+ start the actual simulation.
+ First the external currents that were provided are adapted to yield the
+ wanted average firing rate of 5Hz.
+ Then a warmup of on average 100 spikes per neuron is done.
+ After some preprocessing where internal arrays are allocated and some checks
+ done, the main simulation is done and the spike train recorded.
+ Then there is some postprocessing of internal variables and finally the
+ results including the spike train are saved to the netcdf file DataOut....nc.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+**************************** seting up the network ****************************
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CPU time for network setup: 0s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+************************** starting the simulations ***************************
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+adapt the external currents to yield the wanted average firing rate 
+\end_layout
+
+\begin_layout Plain Layout
+
+rateWnt = 5 Hz with precision pR = 0.01 and SR = 2000 or TR = 0 ms ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	1*Iext yielded f = 5.27702 Hz 
+\end_layout
+
+\begin_layout Plain Layout
+
+	0.947504*Iext yielded f = 5.04323 Hz 
+\end_layout
+
+\begin_layout Plain Layout
+
+the external currents are set to 0.947504*Iext
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+warmup with SW = 20000 or TW = 0 ms ...
+ 	
+\end_layout
+
+\begin_layout Plain Layout
+
+spikes: 20000	time: 19.888s	 -> avg.
+ rate: 5.02817 Hz
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+preprocessing ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+on the reference trajectory, gonna calculate:  
+\end_layout
+
+\begin_layout Plain Layout
+
+	 * the spike train of 200 neurons
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+simulation with SC = 0 or TC = 1000 ms ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	10% of TC done ...
+ 113 spikes @ t = 0.100248s
+\end_layout
+
+\begin_layout Plain Layout
+
+	20% of TC done ...
+ 203 spikes @ t = 0.20086s
+\end_layout
+
+\begin_layout Plain Layout
+
+	30% of TC done ...
+ 306 spikes @ t = 0.300026s
+\end_layout
+
+\begin_layout Plain Layout
+
+	40% of TC done ...
+ 416 spikes @ t = 0.400065s
+\end_layout
+
+\begin_layout Plain Layout
+
+	50% of TC done ...
+ 509 spikes @ t = 0.500204s
+\end_layout
+
+\begin_layout Plain Layout
+
+	60% of TC done ...
+ 609 spikes @ t = 0.601312s
+\end_layout
+
+\begin_layout Plain Layout
+
+	70% of TC done ...
+ 705 spikes @ t = 0.703119s
+\end_layout
+
+\begin_layout Plain Layout
+
+	80% of TC done ...
+ 804 spikes @ t = 0.80028s
+\end_layout
+
+\begin_layout Plain Layout
+
+	90% of TC done ...
+ 897 spikes @ t = 0.901178s
+\end_layout
+
+\begin_layout Plain Layout
+
+	100% of TC done ...
+ 1014 spikes @ t = 1.00023s
+\end_layout
+
+\begin_layout Plain Layout
+
+	spikes: 1014	time: 1.00023s	 -> avg.
+ rate: 5.06882 Hz
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+postprocessing ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CPU time for simulation: 0s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+***************************** saving the results ******************************
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+writing results to: ../data/DataOut-5e87c799f7dcc1c9da6942aa0b791810.nc
+\end_layout
+
+\begin_layout Plain Layout
+
+*** Parameter export successful
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CPU time for saving results: 0s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+********************************** the end ************************************
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CPU time overall: 0s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After the C++ program has terminated, the matlab script will now read in
+ the netcdf file with the results and plot the spike train.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+reading result netcdf file: ../data/DataOut-5e87c799f7dcc1c9da6942aa0b791810.nc
+\end_layout
+
+\begin_layout Plain Layout
+
+reading spike train
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/train1.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theta-neurons"
+
+\end_inset
+
+Theta neurons 
+\begin_inset Formula $r=1$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/train10.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Rapid-theta-neurons"
+
+\end_inset
+
+Rapid theta neurons 
+\begin_inset Formula $r=10$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/train1b.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theta-neurons-1"
+
+\end_inset
+
+Theta neurons 
+\begin_inset Formula $r=1$
+\end_inset
+
+ for 
+\begin_inset Formula $K=150$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/train10b.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Rapid-theta-neurons-1"
+
+\end_inset
+
+Rapid theta neurons 
+\begin_inset Formula $r=10$
+\end_inset
+
+ for 
+\begin_inset Formula $K=150$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/trainLIF.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:LIF-neurons"
+
+\end_inset
+
+Leaky integrate-and-fire neurons for 
+\begin_inset Formula $K=150$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/traincLIF.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:cLIF-neurons"
+
+\end_inset
+
+Correlated LIF neurons for 
+\begin_inset Formula $K=150$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/traincLIF_chaos.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:cLIF-neurons-chaos"
+
+\end_inset
+
+Correlated LIF neurons for 
+\begin_inset Formula $K=150$
+\end_inset
+
+ and 
+\begin_inset Formula $f=12.5$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/traincLIF_long.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:cLIF-neurons-long"
+
+\end_inset
+
+Correlated LIF neurons for 
+\begin_inset Formula $\tau_{s}=20\tau_{m}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Examples of spike trains.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The figure that finally pops up should look like in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Theta-neurons"
+
+\end_inset
+
+.
+ If you change the AP onset rapidness 
+\begin_inset Formula $rap=10$
+\end_inset
+
+, the result will look like in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Rapid-theta-neurons"
+
+\end_inset
+
+.
+ Just by eye, one can see in comparison that the spike pattern of the neurons
+ with the faster AP onset rapidness looks more asynchronous.
+ If you want to see this more clearly, change the connectivity to 
+\begin_inset Formula $K=150$
+\end_inset
+
+ and rerun the simulations for both 
+\begin_inset Formula $rap=1$
+\end_inset
+
+ and 
+\begin_inset Formula $rap=10$
+\end_inset
+
+.
+ The results are shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Theta-neurons-1"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Rapid-theta-neurons-1"
+
+\end_inset
+
+.
+ There exists a critical connectivity for network of neurons with low AP
+ onset rapidness at which a transition from an asynchronous to a synchronous
+ state occurs.
+\end_layout
+
+\begin_layout Enumerate
+In the next step we want to change the neuron model to the leaky integrate-and-f
+ire (LIF) model 
+\begin_inset Formula $neuronType=2$
+\end_inset
+
+ (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:LIF-neurons"
+
+\end_inset
+
+) and the correlated leaky integrate-and-fire model with synaptic time constant
+ 
+\begin_inset Formula $\tau_{s}=\tau_{m}/2$
+\end_inset
+
+: 
+\begin_inset Formula $neuronType=12$
+\end_inset
+
+ (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cLIF-neurons"
+
+\end_inset
+
+, blue dots).
+ The latter is basically implemented twice, namely again in the twoDlinear
+ model 
+\begin_inset Formula $neuronType=10$
+\end_inset
+
+ (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cLIF-neurons"
+
+\end_inset
+
+, green circles).
+ In this case a whole structure of parameters need to be specified, as the
+ twoDlinear model is the generic model class for any two-dimensional neuron
+ model with linear voltage dependence.
+ The main difference in the simulation is that in the cLIF case (
+\begin_inset Formula $neuronType=11\dots14$
+\end_inset
+
+), the neurons' spike times can be computed with a closed form expression,
+ whereas in the twoDlinear case (
+\begin_inset Formula $neuronType=10$
+\end_inset
+
+) the next spike time is found numerically with a root finding algorithm.
+ The fact that the two generated spike trains coincide, confirms that the
+ simulation of both neuron models is very precise.
+ 
+\end_layout
+
+\begin_layout Enumerate
+If you set the firing rate to 
+\begin_inset Formula $f=12.5$
+\end_inset
+
+, the spike patterns of the two neuron models deviate after 
+\begin_inset Formula $8s$
+\end_inset
+
+ warmup and 
+\begin_inset Formula $1.3s$
+\end_inset
+
+ simulation (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cLIF-neurons-chaos"
+
+\end_inset
+
+).
+ This is a nice demonstration of the sensitivity on initial conditions in
+ the chaotic regime.
+ The two spike patterns deviate because the next spike time calculation
+ is implemented differently and the small difference on the order of the
+ machine precision builds up and becomes macroscopically visible after some
+ time.
+ We will see that this is the chaotic regime below when calculating the
+ Lyapunov exponents of the system.
+ Can you find a parameter set for which the spike patterns deviate in the
+ stable regime? 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Hopefully not :)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+If we extend the synaptic time constant 
+\begin_inset Formula $tauS=tauM*20$
+\end_inset
+
+, the spike patterns change their shape because the input current variance
+ changes ...
+ (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cLIF-neurons-long"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Section
+Example: Lyapunov Spectrum
+\end_layout
+
+\begin_layout Standard
+After, we have become a little bit familiar with LEquipe, let's calculate
+ a Lyapunov spectrum.
+ There are a couple of issues that need to be thought of.
+ One of them is the convergence.
+ Since the Lyapunov exponents are asymptotic quantities, the time should
+ go to infinity.
+ This is of course impossible in a numeric calculation.
+ Nevertheless, we can stop the numerical calculation when we have good reasons
+ that we think the Lyapunov spectrum has converged to its asymptotic shape.
+ For every new system, we study, we should therefore do a convergence check,
+ which will be explained here.
+ Another feature is the convergence precision, which tests the largest and
+ the smallest Lyapunov exponent for its convergence and ends the calculation
+ when a certain precision is reach.
+ This precision test start after the minimum number of spikes 
+\begin_inset Formula $SC$
+\end_inset
+
+ or time 
+\begin_inset Formula $TC$
+\end_inset
+
+ of the main calculation is done.
+ More about that below.
+\end_layout
+
+\begin_layout Standard
+So, let's get started and calculate the Lyapunov spectrum with the following
+ matlab script.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "scripts/LEquipe_LE.m"
+lstparams "caption={LEquipe_train.m},language={Matlab}"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This script is essentially the same as the one above where we have calculated
+ the spike trains, but with a new block to set up the calculation of the
+ Lyapunov exponents.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/spectrum1.eps
+	lyxscale 50
+	width 100text%
+	BoundingBox 0bp 350bp 1279bp 724bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theta-neuron-LE"
+
+\end_inset
+
+Theta neuron 
+\begin_inset Formula $r=1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/spectrum10.eps
+	lyxscale 50
+	width 100text%
+	BoundingBox 0bp 350bp 1279bp 724bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theta-neuron-LE-10"
+
+\end_inset
+
+rapid theta neuron 
+\begin_inset Formula $r=10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/spectrum10convergence.eps
+	lyxscale 50
+	width 100text%
+	BoundingBox 0bp 0bp 1279bp 320bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theta-neuron-LE-convergence"
+
+\end_inset
+
+rapid theta neuron 
+\begin_inset Formula $r=10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Some example Lyapunov spectra
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The difference to the previous script that only calculated the spike trains
+ are the following lines that make the C++ code also calculate the largest
+ Lyapunov exponent during a simulation of 
+\begin_inset Formula $10$
+\end_inset
+
+ spike per neuron on average.
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+%Lyapunov exponent parameters
+\end_layout
+
+\begin_layout Plain Layout
+
+ParaSim.LyapunovExp = 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+ParaSim.SC = 10;
+\end_layout
+
+\end_inset
+
+The output of the program returns the largest Lyapunov exponent, in this
+ case 
+\begin_inset Formula $32\, s^{-1}$
+\end_inset
+
+.
+ Setting 
+\begin_inset Formula $ParaSim.LyapunovExp$
+\end_inset
+
+ to 
+\begin_inset Formula $2$
+\end_inset
+
+ would calculate the first two Lyapunov exponents and so on.
+ This is interesting in case of a stable dynamics, e.g.
+ for the LIF networks, where the first Lyapunov exponent is always zero,
+ as the corresponding vector is tangent to the trajectory.
+ Then the second exponent is called the 'largest' Lyapunov exponent.
+\end_layout
+
+\begin_layout Enumerate
+If we want to calculate the whole Lyapunov spectrum, we have to replace
+ the line 
+\begin_inset Formula $ParaSim.LyapunovExp=1;$
+\end_inset
+
+ with the following lines:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+%Lyapunov exponent parameters
+\end_layout
+
+\begin_layout Plain Layout
+
+if ParaNet.NeuronType < 10
+\end_layout
+
+\begin_layout Plain Layout
+
+    ParaSim.LyapunovExp = ParaNet.N;
+\end_layout
+
+\begin_layout Plain Layout
+
+else
+\end_layout
+
+\begin_layout Plain Layout
+
+    ParaSim.LyapunovExp = 2*ParaNet.N;
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\end_inset
+
+The if statement sets the number of Lyapunov epxonents to be calculated.
+ In case of the phase neurons, there are 
+\begin_inset Formula $N$
+\end_inset
+
+ Lyapunov epxonents and in case of the 
+\begin_inset Formula $2$
+\end_inset
+
+-dimensional neuron models, there are 
+\begin_inset Formula $2N$
+\end_inset
+
+ Lyapunov exponents making up the Lyapunov spectrum.
+ The result is displayed in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Theta-neuron-LE"
+
+\end_inset
+
+.
+ Calculate the whole Lypunov spectrum for rapid theta neurons with AP onset
+ rapidness 
+\begin_inset Formula $rap=10$
+\end_inset
+
+ (result shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Theta-neuron-LE-10"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+So far, we haven't considered the convergence criteria.
+ Fortunately 
+\begin_inset Formula $SC$
+\end_inset
+
+ was long enough, such that the Lyapunov spectra were already pretty well
+ converged.
+ Let's take a look at how the exponents converge over time to their asymptotic
+ shape.
+ In order to do that, add 
+\begin_inset Formula $ParaSim.LyapunovExpConvergence=0;$
+\end_inset
+
+ to the Lyapunov exponent parameters after the end of the previously described
+ if statement.
+ Additionally, add the following lines to the end of the script
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+subplot(2,2,3:4)
+\end_layout
+
+\begin_layout Plain Layout
+
+Data.LEtimes(1) = [];
+\end_layout
+
+\begin_layout Plain Layout
+
+Data.LEconvergence(1,:) = [];
+\end_layout
+
+\begin_layout Plain Layout
+
+time = repmat(Data.LEtimes, 1, size(Data.LEconvergence, 2));
+\end_layout
+
+\begin_layout Plain Layout
+
+index = repmat(1/size(Data.LEconvergence, 2):1/size(Data.LEconvergence, 2):1,
+\end_layout
+
+\begin_layout Plain Layout
+
+size(Data.LEconvergence, 1), 1);
+\end_layout
+
+\begin_layout Plain Layout
+
+surf(time, index, Data.LEconvergence);
+\end_layout
+
+\begin_layout Plain Layout
+
+shading flat;
+\end_layout
+
+\begin_layout Plain Layout
+
+zlim([min(min(Data.LEconvergence)) max(max(Data.LEconvergence))]); 
+\end_layout
+
+\end_inset
+
+There is a large peak at the very beginning of the calculation and therefore
+ the convergence of the Lyapunov spectrum is hardly visible.
+ 
+\begin_inset Newline newline
+\end_inset
+
+In the first couple of calculations, the Gram--Schmidt--vectors need to
+ align with the right subspaces and do not really reflect the properties
+ for the Lyapunov exponents.
+ It is therefore wise to do a warmup of the Gram--Schmidt--vectors before
+ the calculation of the Lyapunov spectrum is started.
+ To do so, add the line 
+\begin_inset Formula $ParaSim.SWONS=10;$
+\end_inset
+
+ to the Lyapunov exponent parameters.
+ The result can be seen in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Theta-neuron-LE-convergence"
+
+\end_inset
+
+.
+ Also, try out the LIF spectrum with and without the warmup.
+\begin_inset Newline newline
+\end_inset
+
+This seems to achieve a pretty good convergence.
+ We can set the precision of the largest and the smallest Lyapunov exponents
+ with 
+\begin_inset Formula $ParaSim.pLE=0.001;$
+\end_inset
+
+ Add this to the Lyapunov exponent parameters and rerun the script.
+ What changes and what does that mean?
+\end_layout
+
+\begin_layout Enumerate
+In order to speed up the simulation, we can skip a couple of reorthonormalizatio
+n procedures.
+ These are expensive as the computation time scales with 
+\begin_inset Formula $N^{3}$
+\end_inset
+
+.
+ As long as the Jacobian has a moderate condition number, the orthonormal
+ system does not need to be reorthonormalized.
+ In case of the sparse random graphs, we can estimate the number of spikes
+ after which the product of the single spike Jacobians is not sparse but
+ full.
+ This is approximately after 
+\begin_inset Formula $N/K$
+\end_inset
+
+ spikes.
+ Add the line 
+\begin_inset Formula $ParaSim.ONstep=10*N/K;$
+\end_inset
+
+ to the Lyapunov exponent parameters.
+ This tells the C++ code to start with a reorthonormalization steps size
+ of 
+\begin_inset Formula $40$
+\end_inset
+
+.
+ It will then estimate the condition number and reduce the step size until
+ a moderate condition number is achieved (the error of the orthonormalization
+ procedure scales linear with the condition number).
+ After running the script, there will be this additional check of the condition
+ number
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+optimize ON step size (maximal conditional number = 42)...
+\end_layout
+
+\begin_layout Plain Layout
+
+	the average condition number with ON steps = 40 is 183.501
+\end_layout
+
+\begin_layout Plain Layout
+
+	the average condition number with ON steps = 20 is 121.352
+\end_layout
+
+\begin_layout Plain Layout
+
+	the average condition number with ON steps = 10 is 3.28798
+\end_layout
+
+\begin_layout Plain Layout
+
+	setting ON step size to 10
+\end_layout
+
+\end_inset
+
+In this procedure, the orthonormalization step size is adjusted and set
+ to 
+\begin_inset Formula $10$
+\end_inset
+
+.
+ This should lead to a considerable speedup of the simulation.
+ Compare the computation times with and without the larger step size.
+ Does the Lyapunov spectrum change?
+\end_layout
+
+\begin_layout Enumerate
+Another convergence criteria you might want to check is different starting
+ orthonormal systems.
+ The seed for the random number generator to create the starting orthonormal
+ system can be controlled with 
+\begin_inset Formula $ParaSim.seedONS=seed;$
+\end_inset
+
+.
+ You should should also check, whether different initial conditions of the
+ trajectory (
+\begin_inset Formula $ParaNet.seedInit=seed;$
+\end_inset
+
+) or different realizations of the random graph (
+\begin_inset Formula $rand('twister',seed);$
+\end_inset
+
+ before 
+\begin_inset Formula $random\_graph(K,N);$
+\end_inset
+
+ is called) change the Lyapunov spectrum.
+\end_layout
+
+\begin_layout Section
+Example: Covariant Lyapunov vectors
+\end_layout
+
+\begin_layout Standard
+The information that is being calculated during the calculation of the asymptoti
+c Lyapunov exponents can be used to calculate the covariant Lyapunov vectors.
+ Consult the following references for more details:
+\end_layout
+
+\begin_layout Enumerate
+F.
+ Ginelli, P.
+ Poggi, A.
+ Turchi, H.
+ Chaté, R.
+ Livi, and A.
+ Politi, Phys.
+ Rev.
+ Lett.
+ 99, 130601 (2007)
+\end_layout
+
+\begin_layout Enumerate
+Hong-liu Yang and Günter Radons, Phys.
+ Rev.
+ E 82, 046204 (2010)
+\end_layout
+
+\begin_layout Standard
+The covariant Lyapunov vectors can be calculated with the following script.
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "scripts/LEquipe_CLV.m"
+lstparams "caption={LEquipe_train.m},language={Matlab}"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/clv10.eps
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:rapid-theta-neuron-clv"
+
+\end_inset
+
+rapid theta neuron 
+\begin_inset Formula $r=10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Example local Lyapunov exponents
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+There are only two new lines 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+%covariant Lyapunov vectors
+\end_layout
+
+\begin_layout Plain Layout
+
+ParaSim.CLV = 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+ParaSim.SWCLV = 10;
+\end_layout
+
+\end_inset
+
+The first line after the comment turns on the covariant Lyapunov vector
+ (CLV) calculation and the second one set the length of the warmup of the
+ CLVs in spikes.
+ When the C++ program is called it follows the normal procedure as before
+ but stores the local projection matrices R in the Gram--Schmidt--orthonormaliza
+tion.
+ After this forward calculation is done, the projection matrices are used
+ to calculate the Lyapunov vectors in a backward calculation.
+ The principle idea is that backward in time, random vectors in the eigenbasis
+ spanned by the forward Gram--Schmidt--basis align with the least converging
+ directions forward in time (see the literature above for a detailed explanation
+).
+ The information stored in the covariant Lyapunov vectors about the dynamics
+ is manifold.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Here we calculated the local Lyapunov exponents per spike (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:rapid-theta-neuron-clv"
+
+\end_inset
+
+).
+ The local Lyapunov exponents are the local diverging/converging rates per
+ spike.
+ It is per spike here, since 
+\begin_inset Formula $ONstep=1$
+\end_inset
+
+.
+ This is smallest interval where stretching can occurr, since between spikes,
+ all neurons phases just evolve with constant phase velocities.
+ If you increase 
+\begin_inset Formula $ONstep$
+\end_inset
+
+, then the Lyapunov vectors are not really a local property of those points
+ in phase space anymore.
+\begin_inset Newline newline
+\end_inset
+
+Can you see the zero Lyapunov exponent index whose vector aligns tangent
+ to the trajectory? Why are there positive local exponents in the negtive
+ part of the spectrum and vice versa? What are the correlations? 
+\begin_inset Newline newline
+\end_inset
+
+In Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:rapid-theta-neuron-clv"
+
+\end_inset
+
+, there is also shown a comparison between the Lyapunov spectrum obtained
+ in the standard procedure (forward) and the one obtained from the diverging/con
+verging rates of the Lyapunov vectors (backward).
+ These spectra should coincide, as a health check.
+\end_layout
+
+\begin_layout Enumerate
+Other quantitites that can be calculated from the Lyapunov vectors are:
+\end_layout
+
+\begin_layout Itemize
+participation ratios
+\end_layout
+
+\begin_layout Itemize
+angles between the vectors and thus the angle between the stable and unstable
+ manifold which is important to check whether the system is hyperbolic,
+ see e.g.
+ Masanobu Inubushi, Miki U.
+ Kobayashi, Shin-ichi Takehiro, and Michio Yamada, Phys.
+ Rev.
+ E 85, 016331 (2012)
+\end_layout
+
+\begin_layout Section
+Example: Spike Statistics
+\end_layout
+
+\begin_layout Standard
+One feature of LEquipe is to calculate the statistics of the firing patterns
+ that are being simulated.
+ Although most of them could in principle be calculated from the spike trains
+ in, e.g., Matlab, there are internal functions for their calculation in the
+ C++ program.
+ The firing statistics are obtained during the same simulation as, e.g., the
+ Lyapunov exponent calculation.
+ This means that if both the Lyapunov exponents and the firing rates are
+ measured, they describe the exact same trajectory.
+ This has the advantage that one can be sure that the measurement is for
+ the same trajectory and one does not need to rely on a repition of simulations
+ in which one might change by mistake one parameter.
+ The disadvantage is that for the spike statistics of individual neurons,
+ one needs to consider a lot more spikes in the network (say 1000 spikes
+ per neuron on average) than for the calculation of network properties such
+ as the Lyapunov exponents (say 10 spikes per neuron on average).
+ 
+\end_layout
+
+\begin_layout Standard
+Run the following script to determine the individual firing rates of all
+ neurons in the network.
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "scripts/LEquipe_ISI.m"
+lstparams "caption={LEquipe_train.m},language={Matlab}"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/rate1.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 1cm
+\end_inset
+
+
+\begin_inset Graphics
+	filename pics/ratehist1.eps
+	lyxscale 50
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:theta-neuron-rate"
+
+\end_inset
+
+firing rates of all neurons and the histogram for a theta neuron network
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/stats1.eps
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:theta-neuron-rate-1"
+
+\end_inset
+
+firing rates of all neurons and the histogram for a theta neuron network
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Examples inter-spike-interval statistics
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+After completing the simulation, a plot appears with the neurons firing
+ rates versus the neuron index.
+ You can plot a histogram with 20 bins with the matlab command 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+hist(Data.rateNeurons, 20)
+\end_layout
+
+\end_inset
+
+To get some more data points for the histogram, increase the number of neurons
+ to 
+\begin_inset Formula $N=2000;$
+\end_inset
+
+.
+ The histogram with 
+\begin_inset Formula $20$
+\end_inset
+
+ bins can also automatically be calculated with the command 
+\begin_inset Formula $ParaSim.ISIbins=20;$
+\end_inset
+
+ Insert that under 
+\begin_inset Formula $ParaSim.ISIstats=1;$
+\end_inset
+
+ in the matlab script.
+ The results are displayed in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:theta-neuron-rate"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The paramater 
+\begin_inset Formula $ParaSim.ISIstats;$
+\end_inset
+
+ defines the 'kinda' moments of the inter-spike-interval distribution of
+ the individual neurons.
+ It's called 'kinda' because it's related to the moments but the more relevant
+ quantities with respect to neural networks are saved.
+ With the moments 
+\begin_inset Formula $\mu_{n}=E(t_{\mathrm{isi}}^{n}),$
+\end_inset
+
+ where 
+\begin_inset Formula $t_{\mathrm{isi}}$
+\end_inset
+
+ denote the inter-spike-interval of the neuron, and the standard deviation
+ 
+\begin_inset Formula $\sigma=\sqrt{\mu_{2}-\mu_{1}^{2}}$
+\end_inset
+
+, the kinda moments are:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+the average firing rate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $ParaSim.ISIstats=1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\nu=1/\mu_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+the coefficient of variation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $ParaSim.ISIstats=2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $cv=\sigma/\mu_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+the skewness (third standardized moment)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $ParaSim.ISIstats=3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\gamma_{1}=\mu_{3}/\mu_{1}^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+the kurtosis (fourth standardized moment)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $ParaSim.ISIstats=4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\beta_{2}=\mu_{4}/\mu_{1}^{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Change 
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula $ParaSim.ISIstats=4;$
+\end_inset
+
+ to calculate all four moments and plot them with 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+figure;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+subplot(2,2,1)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Data.rateDistX, Data.rateDistY, '.-');
+\end_layout
+
+\begin_layout Plain Layout
+
+xlabel('rates');
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+subplot(2,2,2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Data.cvDistX, Data.cvDistY, '.-');
+\end_layout
+
+\begin_layout Plain Layout
+
+xlabel('cv');
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+subplot(2,2,3)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Data.skewnessDistX, Data.skewnessDistY, '.-');
+\end_layout
+
+\begin_layout Plain Layout
+
+xlabel('skewness');
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+subplot(2,2,4)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Data.kurtosisDistX, Data.kurtosisDistY, '.-');
+\end_layout
+
+\begin_layout Plain Layout
+
+xlabel('kurtosis');
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Because the moments are only accurate for a large enough sample, in our
+ case the number of spikes, 
+\begin_inset Formula $10$
+\end_inset
+
+ spikes per neuron on average for the calculation are not enough.
+ The faster spiking neurons fire more often than 
+\begin_inset Formula $10$
+\end_inset
+
+ times and the statistics is fine.
+ The neurons with a low firing rate, however, will only fire a few spikes
+ and their statistics is bad.
+ Only neurons that fire more than 
+\begin_inset Formula $6$
+\end_inset
+
+ spikes are considered in the calculation of the moments anyway.
+ You should therefore increase the number of spikes per neuron 
+\begin_inset Formula $ParaSim.SC$
+\end_inset
+
+ to reproduce Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:theta-neuron-rate-1"
+
+\end_inset
+
+.
+ How far 
+\begin_inset Formula $SC$
+\end_inset
+
+ needs to be cranked up depends on the distribution of firing rates.
+ The broader the firing rate distribution in the direction of low firing
+ rates, the longer the simulation need to be.
+\end_layout
+
+\begin_layout Section
+Temporally changing external currents
+\end_layout
+
+\begin_layout Section
+Example: Phase Perturbations
+\end_layout
+
+\begin_layout Section
+Parallel
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ssh frontend02
+\end_layout
+
+\begin_layout Plain Layout
+
+ssh nanna13
+\end_layout
+
+\begin_layout Plain Layout
+
+mpi-selector-menu
+\end_layout
+
+\begin_layout Plain Layout
+
+make clean
+\end_layout
+
+\begin_layout Plain Layout
+
+% edit Makefile for parallel compilation
+\end_layout
+
+\begin_layout Plain Layout
+
+make
+\end_layout
+
+\begin_layout Plain Layout
+
+% in the file machines edit the processors (slots) to be used for the parallel
+ calculation
+\end_layout
+
+\begin_layout Plain Layout
+
+mpirun -np 4 -machinefile machines ./LEquipe ...
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
